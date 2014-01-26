@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3B331704-A4F9-4C5E-8F4B-A7A95F2BEC39}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>X509CertificateTool</RootNamespace>
+    <AssemblyName>X509CertificateTool</AssemblyName>
+    <ApplicationIcon>keys.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BatchCertificateContainer.cs" />
+    <Compile Include="BatchCertificateContainerImportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BatchCertificateContainerImportForm.Designer.cs">
+      <DependentUpon>BatchCertificateContainerImportForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CertData.cs" />
+    <Compile Include="CertificateDialog.cs" />
+    <Compile Include="CertificateInstallationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CertificateInstallationForm.designer.cs">
+      <DependentUpon>CertificateInstallationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CertificateUtilMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CertificateUtilMainForm.Designer.cs">
+      <DependentUpon>CertificateUtilMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PfxPasswordDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PfxPasswordDialog.Designer.cs">
+      <DependentUpon>PfxPasswordDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="BatchCertificateContainerImportForm.resx">
+      <DependentUpon>BatchCertificateContainerImportForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CertificateInstallationForm.resx">
+      <DependentUpon>CertificateInstallationForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CertificateUtilMainForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CertificateUtilMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PfxPasswordDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PfxPasswordDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StoreSelectionForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>StoreSelectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Cache.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="SafeNativeMethods.cs" />
+    <Compile Include="SimpleRSAPubKey.cs" />
+    <Compile Include="StoreSelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StoreSelectionForm.Designer.cs">
+      <DependentUpon>StoreSelectionForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="keys.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
