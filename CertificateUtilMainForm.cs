@@ -980,13 +980,13 @@ namespace X509CertificateTool
 
         private static string ExportFilenameSuggestionForCertificate(X509Certificate2 cert)
         {
-            string s = cert.Subject;
-
-            s = s.Replace("=", "_");
-            s = s.Replace("://", "_");
-            s = s.Replace("/", "_");
-            s = s.Replace(":", "_");
-            s = s.Replace("\"", "_");
+            string s = cert.Subject
+                .Replace("=", "_")
+                .Replace("://", "_")
+                .Replace("/", "_")
+                .Replace(":", "_")
+                .Replace("\"", "_")
+                .Replace("*", "_");
 
             while (s.Contains("__"))
             {
