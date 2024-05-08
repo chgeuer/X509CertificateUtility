@@ -237,7 +237,7 @@ namespace X509CertificateTool
             this.listViewCertificates.DoubleClick += new System.EventHandler(this.displayCertificateUI);
             this.listViewCertificates.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewCertificates_ColumnClick);
             this.listViewCertificates.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listBox_MouseDown);
-            this.listViewCertificates.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewCertificates_KeyDown);
+            this.listViewCertificates.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListViewCertificates_KeyDown);
             // 
             // _StoreLocation
             // 

@@ -1,73 +1,76 @@
-namespace X509CertificateTool
+namespace X509CertificateTool;
+
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
+
+internal class SimpleRSAPubKey
 {
-    using System;
-    using System.Security.Cryptography;
-    using System.Security.Cryptography.X509Certificates;
-    using System.Text.RegularExpressions;
+	string modulus;
+	string exponent;
 
-    internal class SimpleRSAPubKey
+        private SimpleRSAPubKey() { }
+
+	internal SimpleRSAPubKey(X509Certificate2 cert)
 	{
-		string modulus;
-		string exponent;
+		AsymmetricAlgorithm key = cert.PublicKey.Key;
+		string keyAsXml = key.ToXmlString(false);
 
-		private SimpleRSAPubKey() { }
+		modulus = GetModulus(keyAsXml);
+		exponent = GetExponent(keyAsXml);
+	}
 
-		internal SimpleRSAPubKey(X509Certificate2 cert)
+	internal bool EqualsKeyXml(string keyAsXml)
+	{
+		string otherModulus = GetModulus(keyAsXml);
+		if (!modulus.Equals(otherModulus))
 		{
-			AsymmetricAlgorithm key = cert.PublicKey.Key;
-			string keyAsXml = key.ToXmlString(false);
-
-			this.modulus = GetModulus(keyAsXml);
-			this.exponent = GetExponent(keyAsXml);
+			return false;
 		}
 
-		internal bool EqualsKeyXml(string keyAsXml)
-		{
-			string otherModulus = GetModulus(keyAsXml);
-			if (!this.modulus.Equals(otherModulus))
-			{
-				return false;
-			}
+		string otherExponent = GetExponent(keyAsXml);
+		return exponent.Equals(otherExponent);
+	}
 
-			string otherExponent = GetExponent(keyAsXml);
-			return this.exponent.Equals(otherExponent);
-		}
+	static string GetModulus(string keyAsXml)
+	{
+		return GetCryptoValue("Modulus", keyAsXml);
+	}
 
-		static string GetModulus(string keyAsXml)
-		{
-			return GetCryptoValue("Modulus", keyAsXml);
-		}
+	static string GetExponent(string keyAsXml)
+	{
+		return GetCryptoValue("Exponent", keyAsXml);
+	}
 
-		static string GetExponent(string keyAsXml)
-		{
-			return GetCryptoValue("Exponent", keyAsXml);
-		}
+	static string GetCryptoValue(string localName, string keyAsXml)
+	{
+		//string modStart = String.Format("<{0}>", localName);
+		//string modEnd = String.Format("</{0}>", localName);
+		//int modStartI = keyAsXml.IndexOf(modStart) + modStart.Length;
+		//int modEndI = keyAsXml.IndexOf(modEnd);
+		//return keyAsXml.Substring(modStartI, modEndI - modStartI);
 
-		static string GetCryptoValue(string localName, string keyAsXml)
-		{
-			//string modStart = String.Format("<{0}>", localName);
-			//string modEnd = String.Format("</{0}>", localName);
-			//int modStartI = keyAsXml.IndexOf(modStart) + modStart.Length;
-			//int modEndI = keyAsXml.IndexOf(modEnd);
-			//return keyAsXml.Substring(modStartI, modEndI - modStartI);
+		string regexStr = string.Format(@"<(\S+:)?{0}>(.*)</(\S+:)?{0}>", localName);
+		string match = Regex.Match(keyAsXml, regexStr).Groups[2].Value;
 
-			string regexStr = String.Format(@"<(\S+:)?{0}>(.*)</(\S+:)?{0}>", localName);
-			string match = Regex.Match(keyAsXml, regexStr).Groups[2].Value;
+		return match;
+	}
 
-			return match;
-		}
+	public override string ToString() =>
+		$"""
+		<RSAKeyValue xmlns=\"http://www.w3.org/2000/09/xmldsig#\">
+			<Modulus>{modulus}</Modulus>
+			<Exponent>{exponent}</Exponent>
+		</RSAKeyValue>
+		""";
 
-		public override string ToString()
-			=> $"<RSAKeyValue xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><Modulus>{this.modulus}</Modulus><Exponent>{this.exponent}</Exponent></RSAKeyValue>";
-
-		public static string CanonicalizeKey(string someKeyXml)
-		{
-            SimpleRSAPubKey newKey = new SimpleRSAPubKey
+	public static string CanonicalizeKey(string someKeyXml)
+	{
+            SimpleRSAPubKey newKey = new()
             {
-                exponent = SimpleRSAPubKey.GetExponent(someKeyXml),
-                modulus = SimpleRSAPubKey.GetModulus(someKeyXml)
+                exponent = GetExponent(someKeyXml),
+                modulus = GetModulus(someKeyXml)
             };
             return newKey.ToString();
-		}
 	}
 }

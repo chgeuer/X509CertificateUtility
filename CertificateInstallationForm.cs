@@ -222,7 +222,7 @@ namespace X509CertificateTool
                 store = new X509Store(certLocation.StoreName, certLocation.StoreLocation);
                 store.Open(OpenFlags.ReadWrite);
 
-                X509Certificate2 cert = new X509Certificate2();
+                X509Certificate2 cert = new();
                 cert.Import(name, "", X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
                 store.Add(cert);
 

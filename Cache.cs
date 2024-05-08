@@ -1,101 +1,97 @@
-namespace X509CertificateTool
+namespace X509CertificateTool;
+
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+
+/// <summary>
+/// Caches certificate information.
+/// </summary>
+internal static class Cache
 {
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Security.Cryptography;
-    using System.Security.Cryptography.X509Certificates;
+    private static Dictionary<StoreLocation, Dictionary<string, Collection<CertData>>> _cache;
 
-    /// <summary>
-    /// Caches certificate information.
-    /// </summary>
-    internal static class Cache
+    internal static Collection<CertData> GetCachedData(
+        StoreLocation storeLocation,
+        string storeNameAsString,
+        bool computeKeyIdentifiersImmediately,
+        bool computePrivateKeyDataImmediately)
     {
-        private static Dictionary<StoreLocation, Dictionary<string, Collection<CertData>>> _cache;
+        Cache.FillCache(
+            storeLocation, storeNameAsString,
+            computeKeyIdentifiersImmediately,
+            computePrivateKeyDataImmediately);
 
-        internal static Collection<CertData> GetCachedData(
-            StoreLocation storeLocation,
-            string storeNameAsString,
-            bool computeKeyIdentifiersImmediately,
-            bool computePrivateKeyDataImmediately)
+        return _cache[storeLocation][storeNameAsString];
+    }
+
+    internal static void Clear()
+    {
+        if (_cache == null)
         {
-            Cache.FillCache(
-                storeLocation, storeNameAsString,
-                computeKeyIdentifiersImmediately,
-                computePrivateKeyDataImmediately);
-
-            return _cache[storeLocation][storeNameAsString];
+            return;
         }
 
-        internal static void Clear()
+        foreach (StoreLocation storeLocation in _cache.Keys)
         {
-            if (_cache == null)
+            foreach (string storeName in _cache[storeLocation].Keys)
             {
-                return;
+                _cache[storeLocation][storeName].Clear();
             }
+        }
+    }
 
-            foreach (StoreLocation storeLocation in _cache.Keys)
+    private static void FillCache(
+        StoreLocation storeLocation,
+        string storeNameAsString,
+        bool computeKeyIdentifiersImmediately,
+        bool computePrivateKeyDataImmediately)
+    {
+        if (_cache == null)
+        {
+            _cache = new Dictionary<StoreLocation, Dictionary<string, Collection<CertData>>>();
+        }
+
+        if (!_cache.ContainsKey(storeLocation))
+        {
+            _cache[storeLocation] = [];
+        }
+        Dictionary<string, Collection<CertData>> cacheLevel2 = _cache[storeLocation];
+
+        if (!cacheLevel2.ContainsKey(storeNameAsString))
+        {
+            cacheLevel2[storeNameAsString] = new Collection<CertData>();
+        }
+        Collection<CertData> cacheLevel3 = cacheLevel2[storeNameAsString];
+
+        X509Store store = new X509Store(storeNameAsString, storeLocation);
+        try
+        {
+            store.Open(OpenFlags.OpenExistingOnly | OpenFlags.ReadOnly);
+
+            // Only do the expensive operation when the number of certs changes
+            if (store.Certificates.Count != cacheLevel3.Count)
             {
-                foreach (string storeName in _cache[storeLocation].Keys)
+                cacheLevel3.Clear();
+
+                foreach (X509Certificate2 cert in store.Certificates)
                 {
-                    _cache[storeLocation][storeName].Clear();
+                    cacheLevel3.Add(CertData.FromCert(
+                        storeLocation, storeNameAsString, cert,
+                        computeKeyIdentifiersImmediately,
+                        computePrivateKeyDataImmediately));
+
+                    cert.Reset();
                 }
             }
         }
-
-        private static void FillCache(
-            StoreLocation storeLocation,
-            string storeNameAsString,
-            bool computeKeyIdentifiersImmediately,
-            bool computePrivateKeyDataImmediately)
+        catch (CryptographicException)
         {
-            if (_cache == null)
-            {
-                _cache = new Dictionary<StoreLocation, Dictionary<string, Collection<CertData>>>();
-            }
-
-            if (!_cache.ContainsKey(storeLocation))
-            {
-                _cache[storeLocation] = new Dictionary<string, Collection<CertData>>();
-            }
-            Dictionary<string, Collection<CertData>> cacheLevel2 = _cache[storeLocation];
-
-            if (!cacheLevel2.ContainsKey(storeNameAsString))
-            {
-                cacheLevel2[storeNameAsString] = new Collection<CertData>();
-            }
-            Collection<CertData> cacheLevel3 = cacheLevel2[storeNameAsString];
-
-            X509Store store = new X509Store(storeNameAsString, storeLocation);
-            try
-            {
-                store.Open(OpenFlags.OpenExistingOnly | OpenFlags.ReadOnly);
-
-                // Only do the expensive operation when the number of certs changes
-                if (store.Certificates.Count != cacheLevel3.Count)
-                {
-                    cacheLevel3.Clear();
-
-                    foreach (X509Certificate2 cert in store.Certificates)
-                    {
-                        cacheLevel3.Add(CertData.FromCert(
-                            storeLocation, storeNameAsString, cert,
-                            computeKeyIdentifiersImmediately,
-                            computePrivateKeyDataImmediately));
-
-                        cert.Reset();
-                    }
-                }
-            }
-            catch (CryptographicException)
-            {
-            }
-            finally
-            {
-                if (store != null)
-                {
-                    store.Close();
-                }
-            }
+        }
+        finally
+        {
+            store?.Close();
         }
     }
 }
