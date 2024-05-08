@@ -4,7 +4,7 @@ namespace X509CertificateTool
     using System.Runtime.InteropServices;
 
     /// <summary>
-    /// P/Invoke wrapper for showing the Win32 Certificate dialog. 
+    /// P/Invoke wrapper for showing the Win32 Certificate dialog.
     /// </summary>
     internal class CertificateDialog
     {

@@ -43,7 +43,7 @@ namespace X509CertificateTool
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOK.Location = new System.Drawing.Point(413, 161);
+            this.buttonOK.Location = new System.Drawing.Point(413, 182);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 0;
@@ -55,7 +55,7 @@ namespace X509CertificateTool
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(332, 161);
+            this.buttonCancel.Location = new System.Drawing.Point(332, 182);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 1;
@@ -93,7 +93,7 @@ namespace X509CertificateTool
             // labelSecondPasswordEntryLabel
             // 
             this.labelSecondPasswordEntryLabel.AutoSize = true;
-            this.labelSecondPasswordEntryLabel.Location = new System.Drawing.Point(45, 115);
+            this.labelSecondPasswordEntryLabel.Location = new System.Drawing.Point(45, 106);
             this.labelSecondPasswordEntryLabel.Name = "labelSecondPasswordEntryLabel";
             this.labelSecondPasswordEntryLabel.Size = new System.Drawing.Size(207, 13);
             this.labelSecondPasswordEntryLabel.TabIndex = 5;
@@ -113,7 +113,7 @@ namespace X509CertificateTool
             // 
             this.textBoxPassword2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPassword2.Location = new System.Drawing.Point(48, 131);
+            this.textBoxPassword2.Location = new System.Drawing.Point(48, 122);
             this.textBoxPassword2.Name = "textBoxPassword2";
             this.textBoxPassword2.Size = new System.Drawing.Size(440, 20);
             this.textBoxPassword2.TabIndex = 7;
@@ -123,7 +123,7 @@ namespace X509CertificateTool
             // 
             this.checkBoxShowPassword.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBoxShowPassword.AutoSize = true;
-            this.checkBoxShowPassword.Location = new System.Drawing.Point(30, 186);
+            this.checkBoxShowPassword.Location = new System.Drawing.Point(166, 148);
             this.checkBoxShowPassword.Name = "checkBoxShowPassword";
             this.checkBoxShowPassword.Size = new System.Drawing.Size(159, 17);
             this.checkBoxShowPassword.TabIndex = 8;
@@ -135,7 +135,7 @@ namespace X509CertificateTool
             // 
             this.checkBoxAllowEmptyPassword.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBoxAllowEmptyPassword.AutoSize = true;
-            this.checkBoxAllowEmptyPassword.Location = new System.Drawing.Point(30, 163);
+            this.checkBoxAllowEmptyPassword.Location = new System.Drawing.Point(30, 148);
             this.checkBoxAllowEmptyPassword.Name = "checkBoxAllowEmptyPassword";
             this.checkBoxAllowEmptyPassword.Size = new System.Drawing.Size(130, 17);
             this.checkBoxAllowEmptyPassword.TabIndex = 9;

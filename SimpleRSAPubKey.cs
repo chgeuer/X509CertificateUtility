@@ -4,14 +4,14 @@ namespace X509CertificateTool
     using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
     using System.Text.RegularExpressions;
-    
+
     internal class SimpleRSAPubKey
 	{
 		string modulus;
 		string exponent;
-		
+
 		private SimpleRSAPubKey() { }
-		
+
 		internal SimpleRSAPubKey(X509Certificate2 cert)
 		{
 			AsymmetricAlgorithm key = cert.PublicKey.Key;
@@ -20,7 +20,7 @@ namespace X509CertificateTool
 			this.modulus = GetModulus(keyAsXml);
 			this.exponent = GetExponent(keyAsXml);
 		}
-		
+
 		internal bool EqualsKeyXml(string keyAsXml)
 		{
 			string otherModulus = GetModulus(keyAsXml);
@@ -32,7 +32,7 @@ namespace X509CertificateTool
 			string otherExponent = GetExponent(keyAsXml);
 			return this.exponent.Equals(otherExponent);
 		}
-		
+
 		static string GetModulus(string keyAsXml)
 		{
 			return GetCryptoValue("Modulus", keyAsXml);
@@ -42,7 +42,7 @@ namespace X509CertificateTool
 		{
 			return GetCryptoValue("Exponent", keyAsXml);
 		}
-		
+
 		static string GetCryptoValue(string localName, string keyAsXml)
 		{
 			//string modStart = String.Format("<{0}>", localName);
@@ -53,24 +53,21 @@ namespace X509CertificateTool
 
 			string regexStr = String.Format(@"<(\S+:)?{0}>(.*)</(\S+:)?{0}>", localName);
 			string match = Regex.Match(keyAsXml, regexStr).Groups[2].Value;
-			
+
 			return match;
 		}
-		
+
 		public override string ToString()
-		{
-			return
-				string.Format(
-					"<RSAKeyValue xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><Modulus>{0}</Modulus><Exponent>{1}</Exponent></RSAKeyValue>",
-					this.modulus, this.exponent);
-		}
-		
+			=> $"<RSAKeyValue xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><Modulus>{this.modulus}</Modulus><Exponent>{this.exponent}</Exponent></RSAKeyValue>";
+
 		public static string CanonicalizeKey(string someKeyXml)
 		{
-			SimpleRSAPubKey newKey = new SimpleRSAPubKey();
-			newKey.exponent = SimpleRSAPubKey.GetExponent(someKeyXml);
-			newKey.modulus = SimpleRSAPubKey.GetModulus(someKeyXml);
-			return newKey.ToString();
+            SimpleRSAPubKey newKey = new SimpleRSAPubKey
+            {
+                exponent = SimpleRSAPubKey.GetExponent(someKeyXml),
+                modulus = SimpleRSAPubKey.GetModulus(someKeyXml)
+            };
+            return newKey.ToString();
 		}
 	}
 }

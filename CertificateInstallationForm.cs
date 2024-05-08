@@ -179,7 +179,7 @@ namespace X509CertificateTool
             CertLocation loc = senderListbox.Tag as CertLocation;
 
             List<string> exportedFilenames = new List<string>();
-            
+
             string exportFolder = Path.GetTempPath(); // Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             foreach (CertData certData in senderListbox.SelectedItems)
             {
@@ -230,7 +230,7 @@ namespace X509CertificateTool
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Installation problem", 
+                MessageBox.Show(ex.Message, "Installation problem",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
@@ -276,9 +276,9 @@ namespace X509CertificateTool
 
         private void textBoxFilterDisplay_TextChanged(object sender, EventArgs e)
         {
-            List<ListBox> listBoxes = new List<ListBox>() { 
+            List<ListBox> listBoxes = new List<ListBox>() {
                 listBoxCurrentUserMy, listBoxCurrentUserAddressBook,
-                listBoxCurrentUserTrustedPeople, listBoxCurrentUserRoot, 
+                listBoxCurrentUserTrustedPeople, listBoxCurrentUserRoot,
                 listBoxLocalMachineMy, listBoxLocalMachineAddressBook,
                 listBoxLocalMachineTrustedPeople, listBoxLocalMachineRoot};
 

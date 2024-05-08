@@ -4,23 +4,23 @@ namespace X509CertificateTool
     using System.Collections.ObjectModel;
     using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
-    
+
     /// <summary>
-    /// Caches certificate information. 
+    /// Caches certificate information.
     /// </summary>
     internal static class Cache
     {
         private static Dictionary<StoreLocation, Dictionary<string, Collection<CertData>>> _cache;
 
         internal static Collection<CertData> GetCachedData(
-            StoreLocation storeLocation, 
-            string storeNameAsString, 
-            bool computeKeyIdentifiersImmediately, 
+            StoreLocation storeLocation,
+            string storeNameAsString,
+            bool computeKeyIdentifiersImmediately,
             bool computePrivateKeyDataImmediately)
         {
             Cache.FillCache(
-                storeLocation, storeNameAsString, 
-                computeKeyIdentifiersImmediately, 
+                storeLocation, storeNameAsString,
+                computeKeyIdentifiersImmediately,
                 computePrivateKeyDataImmediately);
 
             return _cache[storeLocation][storeNameAsString];
@@ -41,11 +41,11 @@ namespace X509CertificateTool
                 }
             }
         }
- 
+
         private static void FillCache(
-            StoreLocation storeLocation, 
-            string storeNameAsString, 
-            bool computeKeyIdentifiersImmediately, 
+            StoreLocation storeLocation,
+            string storeNameAsString,
+            bool computeKeyIdentifiersImmediately,
             bool computePrivateKeyDataImmediately)
         {
             if (_cache == null)

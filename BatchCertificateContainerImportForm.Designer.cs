@@ -82,14 +82,17 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "Store location";
+            this.columnHeader1.Width = 127;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Store name";
+            this.columnHeader2.Width = 99;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Certificate Subject";
+            this.columnHeader3.Width = 335;
             // 
             // panel1
             // 

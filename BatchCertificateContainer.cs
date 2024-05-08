@@ -20,10 +20,8 @@
 
                 if (!certificate.HasPrivateKey) return false;
 
-                RSACryptoServiceProvider privateKey = certificate.PrivateKey as RSACryptoServiceProvider;
-
-                return (privateKey != null &&
-                    privateKey.CspKeyContainerInfo != null && 
+                return (certificate.PrivateKey is RSACryptoServiceProvider privateKey &&
+                    privateKey.CspKeyContainerInfo != null &&
                     privateKey.CspKeyContainerInfo.Exportable);
             }
         }
@@ -32,8 +30,8 @@
     internal class BatchCertificateContainer
     {
         internal BatchCertificateContainer() { }
-        
-        internal BatchCertificateContainer(string filename, IEnumerable<CertData> certDataItems) 
+
+        internal BatchCertificateContainer(string filename, IEnumerable<CertData> certDataItems)
         {
             this.Filename = filename;
             this.m_certs.AddRange(certDataItems);
@@ -47,21 +45,18 @@
 
         public string Filename { get; private set;}
 
-        private List<CertData> m_certs = new List<CertData>();
-        public IList<CertData> Certs 
-        { 
-            get { return this.m_certs; } 
+        private readonly List<CertData> m_certs = new List<CertData>();
+        public IList<CertData> Certs
+        {
+            get { return this.m_certs; }
         }
 
         public void Store()
         {
             using (FileStream fs = new FileStream(this.Filename, FileMode.Create, FileAccess.Write))
             {
-                XmlWriter xw = XmlWriter.Create(fs);
-
-                XStreamingElement itemsElem = new XStreamingElement("Certificates",
-                    from cert in this.Certs select cert.ToXElement());
-
+                var xw = XmlWriter.Create(fs);
+                var itemsElem = new XStreamingElement("Certificates", Certs.Select(c => c.ToXElement()));
                 itemsElem.WriteTo(xw);
                 xw.Flush();
             }
@@ -71,15 +66,12 @@
         {
             using (FileStream fs = File.Open(this.Filename, FileMode.Open))
             {
+                m_certs.Clear();
+
                 XDocument doc = XDocument.Load(XmlReader.Create(fs));
-
                 XElement root = doc.Elements().First();
-
-                var x = from e in doc.Element("Certificates").Elements()
-                        select new CertData(e);
-                
-                this.m_certs.Clear();
-                this.m_certs.AddRange(x);
+                var x = doc.Element("Certificates").Elements().Select(e => new CertData(e));
+                m_certs.AddRange(x);
             }
         }
 
@@ -88,7 +80,7 @@
             var form = new BatchCertificateContainerImportForm(this);
             if (form.ShowDialog() == DialogResult.OK)
             {
-                foreach (CertData d in this.m_certs)
+                foreach (CertData d in m_certs)
                 {
                     if (d.NotYetInStore && install(d))
                     {
