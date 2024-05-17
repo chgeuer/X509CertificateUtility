@@ -48,10 +48,7 @@ internal static class Cache
         bool computeKeyIdentifiersImmediately,
         bool computePrivateKeyDataImmediately)
     {
-        if (_cache == null)
-        {
-            _cache = new Dictionary<StoreLocation, Dictionary<string, Collection<CertData>>>();
-        }
+        _cache ??= [];
 
         if (!_cache.ContainsKey(storeLocation))
         {

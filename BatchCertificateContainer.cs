@@ -18,6 +18,7 @@ public static class CertificateInspectorExtension
 
         if (!certificate.HasPrivateKey) return false;
 
+        // TODO
         return
             certificate.PrivateKey is RSACryptoServiceProvider privateKey &&
             privateKey.CspKeyContainerInfo != null &&

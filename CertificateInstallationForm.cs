@@ -5,7 +5,6 @@ namespace X509CertificateTool
     using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.Drawing;
-    using System.Globalization;
     using System.IO;
     using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
@@ -38,11 +37,11 @@ namespace X509CertificateTool
             listBox.HorizontalScrollbar = true;
             listBox.AllowDrop = true;
             listBox.SelectionMode = SelectionMode.MultiExtended;
-            listBox.DragDrop += new DragEventHandler(this.listBox_DragDrop);
-            listBox.DragEnter += new DragEventHandler(this.listBox_DragEnter);
-            listBox.DragEnter += new DragEventHandler(this.listBox_DragEnterColoring);
-            listBox.DragLeave += new EventHandler(listBox_DragLeaveColoring);
-            listBox.MouseDown += new MouseEventHandler(listBoxInstalledCerts_MouseDown);
+            listBox.DragDrop += new DragEventHandler(this.ListBox_DragDrop);
+            listBox.DragEnter += new DragEventHandler(this.ListBox_DragEnter);
+            listBox.DragEnter += new DragEventHandler(this.ListBox_DragEnterColoring);
+            listBox.DragLeave += new EventHandler(ListBox_DragLeaveColoring);
+            listBox.MouseDown += new MouseEventHandler(ListBoxInstalledCerts_MouseDown);
 
             ListCurrentCertificates(listBox, null);
         }
@@ -54,29 +53,31 @@ namespace X509CertificateTool
         {
             Debug.Assert(!string.IsNullOrEmpty(filename), "!string.IsNullOrEmpty(filename)");
 
-            foreach (string certExtension in certExtensions)
-            {
-                if (filename.EndsWith(certExtension))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return certExtensions.Any(filename.EndsWith);
+            //foreach (string certExtension in certExtensions)
+            //{
+            //    if (filename.EndsWith(certExtension))
+            //    {
+            //        return true;
+            //    }
+            //}
+            //return false;
         }
 
         static bool ContainsCertificateFiles(string[] filenames)
         {
-            foreach (string filename in filenames)
-            {
-                if (IsCertificateFile(filename))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return filenames.Any(IsCertificateFile);
+            //foreach (string filename in filenames)
+            //{
+            //    if (IsCertificateFile(filename))
+            //    {
+            //        return true;
+            //    }
+            //}
+            //return false;
         }
 
-        private void listBox_DragEnterColoring(object sender, DragEventArgs e)
+        private void ListBox_DragEnterColoring(object sender, DragEventArgs e)
         {
             ListBox listBox = sender as ListBox;
 
@@ -114,14 +115,14 @@ namespace X509CertificateTool
             return SystemColors.Window;
         }
 
-        void listBox_DragLeaveColoring(object sender, EventArgs e)
+        void ListBox_DragLeaveColoring(object sender, EventArgs e)
         {
             ListBox listBox = sender as ListBox;
 
             listBox.BackColor = SystemColors.Window;
         }
 
-        private void listBox_DragEnter(object sender, DragEventArgs e)
+        private void ListBox_DragEnter(object sender, DragEventArgs e)
         {
             ListBox listBox = sender as ListBox;
 
@@ -141,10 +142,10 @@ namespace X509CertificateTool
             e.Effect = DragDropEffects.None;
         }
 
-        private void listBox_DragDrop(object sender, DragEventArgs e)
+        private void ListBox_DragDrop(object sender, DragEventArgs e)
         {
-            ListBox listBox = sender as ListBox;
-            CertLocation loc = listBox.Tag as CertLocation;
+            ListBox listBox = (ListBox) sender;
+            CertLocation loc = (CertLocation) listBox.Tag;
 
             string[] names = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             foreach (string name in names)
@@ -163,22 +164,22 @@ namespace X509CertificateTool
                 }
             }
 
-            listBox_DragLeaveColoring(sender, e);
+            ListBox_DragLeaveColoring(sender, e);
         }
 
-        private static void listBoxInstalledCerts_MouseDown(object sender, MouseEventArgs e)
+        private static void ListBoxInstalledCerts_MouseDown(object sender, MouseEventArgs e)
         {
-            ListBox senderListbox = sender as ListBox;
-            if (senderListbox == null) return;
+            if (sender is not ListBox senderListbox) return;
 
             int draggedIndex = senderListbox.IndexFromPoint(e.X, e.Y);
             if (draggedIndex == -1)
             {
                 return;
             }
-            CertLocation loc = senderListbox.Tag as CertLocation;
 
-            List<string> exportedFilenames = new List<string>();
+            _ = senderListbox.Tag as CertLocation;
+
+            List<string> exportedFilenames = [];
 
             string exportFolder = Path.GetTempPath(); // Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             foreach (CertData certData in senderListbox.SelectedItems)
@@ -187,13 +188,12 @@ namespace X509CertificateTool
                 exportedFilenames.Add(exportedFilename);
             }
 
-            DataObject dto = new DataObject(
-                DataFormats.FileDrop, exportedFilenames.ToArray());
+            DataObject dto = new(DataFormats.FileDrop, exportedFilenames.ToArray());
 
             senderListbox.DoDragDrop(dto, DragDropEffects.Move);
         }
 
-        private void listBoxCertFiles_MouseDown(object sender, MouseEventArgs e)
+        private void ListBoxCertFiles_MouseDown(object sender, MouseEventArgs e)
         {
             int draggedIndex = listBoxCertFiles.IndexFromPoint(e.X, e.Y);
             if (draggedIndex == -1)
@@ -203,18 +203,17 @@ namespace X509CertificateTool
 
             string path = textBoxFolder.Text;
 
-            List<string> filenames = new List<string>();
+            List<string> filenames = [];
             foreach (string filename in listBoxCertFiles.SelectedItems)
             {
                 filenames.Add(path + Path.DirectorySeparatorChar + filename);
             }
-            DataObject dto = new DataObject(
-                DataFormats.FileDrop, filenames.ToArray());
+            DataObject dto = new(DataFormats.FileDrop, filenames.ToArray());
 
             listBoxCertFiles.DoDragDrop(dto, DragDropEffects.Copy);
         }
 
-        private void InstallCertificate(ListBox listBox, CertLocation certLocation, string name)
+        private static void InstallCertificate(ListBox listBox, CertLocation certLocation, string name)
         {
             X509Store store = null;
             try
@@ -222,7 +221,8 @@ namespace X509CertificateTool
                 store = new X509Store(certLocation.StoreName, certLocation.StoreLocation);
                 store.Open(OpenFlags.ReadWrite);
 
-                X509Certificate2 cert = new();
+                using X509Certificate2 cert = new();         // TODO
+
                 cert.Import(name, "", X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
                 store.Add(cert);
 
@@ -235,14 +235,11 @@ namespace X509CertificateTool
             }
             finally
             {
-                if (store != null)
-                {
-                    store.Close();
-                }
+                store?.Close();
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             folderBrowserDialog1.ShowNewFolderButton = false;
 
@@ -265,7 +262,7 @@ namespace X509CertificateTool
             }
         }
 
-        private void textBoxFolder_TextChanged(object sender, EventArgs e)
+        private void TextBoxFolder_TextChanged(object sender, EventArgs e)
         {
             string potentialDir = textBoxFolder.Text;
             if (Directory.Exists(potentialDir))
@@ -274,7 +271,7 @@ namespace X509CertificateTool
             }
         }
 
-        private void textBoxFilterDisplay_TextChanged(object sender, EventArgs e)
+        private void TextBoxFilterDisplay_TextChanged(object sender, EventArgs e)
         {
             List<ListBox> listBoxes = new List<ListBox>() {
                 listBoxCurrentUserMy, listBoxCurrentUserAddressBook,
@@ -344,33 +341,22 @@ namespace X509CertificateTool
             }
             finally
             {
-                if (store != null)
-                {
-                    store.Close();
-                }
+                store?.Close();
             }
         }
     }
 
-    internal class CertLocation
+    internal record CertLocation
     {
-        private CertLocation() { }
+        public readonly StoreLocation StoreLocation;
 
-        public CertLocation(StoreLocation storeLocation, StoreName storeName)
-        {
-            this.StoreLocation = storeLocation;
-            this.StoreName = storeName;
-        }
+        public readonly StoreName StoreName;
 
-        public StoreLocation StoreLocation { get; private set; }
-
-        public StoreName StoreName { get; private set; }
+        public CertLocation(StoreLocation storeLocation, StoreName storeName) => (StoreLocation, StoreName) = (storeLocation, storeName);
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.CurrentCulture, "Certificate store {0}/{1}",
-                Enum.GetName(typeof(StoreLocation), this.StoreLocation),
-                Enum.GetName(typeof(StoreName), this.StoreName));
+            return $"Certificate store {Enum.GetName(typeof(StoreLocation), this.StoreLocation)}/{Enum.GetName(typeof(StoreName), this.StoreName)}";
         }
     }
 }

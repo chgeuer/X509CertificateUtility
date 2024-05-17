@@ -23,7 +23,7 @@ internal class CertData
     {
         m_transientCert = transientCert;
 
-        X509Certificate2 cert = new X509Certificate2(transientCert);
+        X509Certificate2 cert = new(transientCert);
 
         FillCheapCertData(StoreLocation.CurrentUser, "Memory", cert);
         FillKeyIndentifierCertData(cert);
@@ -163,10 +163,10 @@ internal class CertData
 
 	internal X509Certificate2 GetX509Certificate2ClientWillCallReset()
 	{
-            if (m_transientCert != null)
-            {
-                return new X509Certificate2(m_transientCert);
-            }
+        if (m_transientCert != null)
+        {
+            return new X509Certificate2(m_transientCert);
+        }
 
 		X509Store store = null;
 		try
@@ -447,8 +447,9 @@ internal class CertData
 	}
 
 	private static RSACryptoServiceProvider PrivateKey(X509Certificate2 certificate)
-	{
-		return certificate.PrivateKey as RSACryptoServiceProvider;
+    {
+		// TODO
+        return certificate.PrivateKey as RSACryptoServiceProvider;
 	}
 
 	private static bool Exportable(RSACryptoServiceProvider privateKey)
@@ -463,15 +464,14 @@ internal class CertData
 
 	private static string PrivateKeyFilenameForCertificate(RSACryptoServiceProvider privateKey)
 	{
+        if (privateKey == null)
+        {
+            return "Private key does not exist or is not accessible";
+        }
+
 		try
-		{
-			if (privateKey == null)
-			{
-				return "Private key does not exist or is not accessible";
-			}
-
+        {
 			string keyFileName = privateKey.CspKeyContainerInfo.UniqueKeyContainerName;
-
 			string keyDirectory = null;
 
 			#region Determine keyDirectory
@@ -516,7 +516,7 @@ internal class CertData
 
 			#endregion
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			sb.Append(keyDirectory);
 			sb.Append(Path.DirectorySeparatorChar);
 			sb.Append(keyFileName);
@@ -552,7 +552,7 @@ internal class CertData
             StoreLocation storeLocation = (StoreLocation) Enum.Parse(
                 typeof(StoreLocation), e.Attribute("StoreLocation").Value);
             m_transientCert = Convert.FromBase64String(e.Value);
-            X509Certificate2 certificate = new X509Certificate2(m_transientCert);
+            X509Certificate2 certificate = new(m_transientCert);
 
             FillCheapCertData(storeLocation, storeName, certificate);
             FillKeyIndentifierCertData(certificate);
@@ -563,10 +563,9 @@ internal class CertData
         {
             get
             {
-                X509Store store = null;
+                using X509Store store = new(StoreNameAsString, StoreLocation);
                 try
                 {
-                    store = new X509Store(StoreNameAsString, StoreLocation);
                     store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
 
                     foreach (X509Certificate2 cert in store.Certificates)
@@ -607,7 +606,7 @@ internal class CertData
         {
             if (NotYetInStore)
             {
-                X509Store s = new X509Store(StoreNameAsString, StoreLocation);
+                using X509Store s = new(StoreNameAsString, StoreLocation);
                 try
                 {
                     s.Open(OpenFlags.ReadWrite);

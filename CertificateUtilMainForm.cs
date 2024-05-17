@@ -213,7 +213,7 @@ public partial class CertificateUtilMainForm : Form
                 ICollection<CertData> certDataCollection = this.searchByRegex(
                     storeLocation, storeName, regex);
 
-                addCertsToList(certDataCollection);
+                AddCertsToList(certDataCollection);
             }
         }
         Cursor = oldCursor;
@@ -268,7 +268,7 @@ public partial class CertificateUtilMainForm : Form
                 ICollection<CertData> certCollection = searchByKeyIdentifier(storeLocation, storeName,
                     searchValue);
 
-                addCertsToList(certCollection);
+                AddCertsToList(certCollection);
             }
         }
         Cursor = oldCursor;
@@ -374,14 +374,14 @@ public partial class CertificateUtilMainForm : Form
 
     #endregion
 
-    private void newCertificateSelected(object sender, EventArgs e)
+    private void NewCertificateSelected(object sender, EventArgs e)
     {
         var certData = GetSelectedCertWrapperForListBox();
 
-        this.FillUI(certData);
+        FillUI(certData);
     }
 
-    private void contextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+    private void ContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
     {
         var selectedCerts = GetSelectedCertWrapperForListBox();
         if (selectedCerts.Count == 0)
@@ -402,12 +402,12 @@ public partial class CertificateUtilMainForm : Form
         }
     }
 
-    private void displayCertificateUI(object sender, EventArgs e)
+    private void DisplayCertificateUI(object sender, EventArgs e)
     {
         var selectedCerts = GetSelectedCertWrapperForListBox();
         if (selectedCerts.Count == 1)
         {
-            this.FillUI(selectedCerts);
+            FillUI(selectedCerts);
 
             X509Certificate2 cert = selectedCerts[0].GetX509Certificate2ClientWillCallReset();
             X509Certificate2UI.DisplayCertificate(cert);
@@ -431,16 +431,18 @@ public partial class CertificateUtilMainForm : Form
             storeName = certData.StoreNameAsString;
         }
 
-        ListViewItem item = new ListViewItem(storeLocation);
+        ListViewItem item = new(storeLocation)
+        {
+            Tag = certData
+        };
         item.SubItems.Add(storeName);
         item.SubItems.Add(certData.CertSubject);
         item.SubItems.Add(certData.CertIssuer);
-        item.Tag = certData;
 
         return item;
     }
 
-    private void buttonViewCertificateInClipboardClicked(object sender, EventArgs e)
+    private void ButtonViewCertificateInClipboardClicked(object sender, EventArgs e)
     {
         string c = Clipboard.GetText();
         if (string.IsNullOrEmpty(c))
@@ -482,7 +484,7 @@ public partial class CertificateUtilMainForm : Form
         }
     }
 
-    private void displayPrivateKeyFileProperties(object sender, EventArgs e)
+    private void DisplayPrivateKeyFileProperties(object sender, EventArgs e)
     {
         if (textBoxPrivateKeyFilename.Text.Length > 0)
         {
@@ -494,7 +496,7 @@ public partial class CertificateUtilMainForm : Form
         }
     }
 
-    private void buttonClearCachedCerts_Click(object sender, EventArgs e)
+    private void ButtonClearCachedCerts_Click(object sender, EventArgs e)
     {
         Cache.Clear();
     }
@@ -631,18 +633,18 @@ public partial class CertificateUtilMainForm : Form
         Cursor = oldCursor;
     }
 
-    private void addCertsToList(ICollection<CertData> certs)
+    private void AddCertsToList(ICollection<CertData> certs)
     {
         if (certs != null)
         {
-            this.listViewCertificates.BeginUpdate();
+            listViewCertificates.BeginUpdate();
 
             certs.ToList().ForEach(cert =>
-                this.listViewCertificates.Items.Add(CreateListViewItem(cert)));
+                listViewCertificates.Items.Add(CreateListViewItem(cert)));
 
-            AutoResize(this.listViewCertificates);
+            AutoResize(listViewCertificates);
 
-            this.listViewCertificates.EndUpdate();
+            listViewCertificates.EndUpdate();
         }
     }
 
@@ -851,7 +853,7 @@ public partial class CertificateUtilMainForm : Form
 
     #endregion
 
-    private void copyPublicKeyToClipboard(object sender, EventArgs e)
+    private void CopyPublicKeyToClipboard(object sender, EventArgs e)
     {
         var selectedCerts = GetSelectedCertWrapperForListBox();
         if (selectedCerts.Count != 1)
@@ -862,23 +864,23 @@ public partial class CertificateUtilMainForm : Form
         Clipboard.SetText(selectedCerts[0].PublicKey.ToString());
     }
 
-    private void copyAsWCFCfg_FindBySubjectDistinguishedName(object sender, EventArgs e)
+    private void CopyAsWCFCfg_FindBySubjectDistinguishedName(object sender, EventArgs e)
     {
-        this.copyAsWCFCfg(
+        this.CopyAsWCFCfg(
             X509FindType.FindBySubjectDistinguishedName,
             delegate(CertData certData) { return certData.CertSubject; });
     }
 
-    private void copyAsWCFCfg_FindByThumbprint(object sender, EventArgs e)
+    private void CopyAsWCFCfg_FindByThumbprint(object sender, EventArgs e)
     {
-        this.copyAsWCFCfg(
+        this.CopyAsWCFCfg(
             X509FindType.FindByThumbprint,
             delegate(CertData certData) { return certData.CertThumbprint; });
     }
 
     private delegate string ExtractData(CertData certData);
 
-    private void copyAsWCFCfg(X509FindType findType, ExtractData extractor)
+    private void CopyAsWCFCfg(X509FindType findType, ExtractData extractor)
     {
         var selectedCerts = GetSelectedCertWrapperForListBox();
         if (selectedCerts.Count != 1)

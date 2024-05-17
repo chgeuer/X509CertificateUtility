@@ -383,7 +383,7 @@ namespace X509CertificateTool
             this.textBoxFolder.Size = new System.Drawing.Size(198, 20);
             this.textBoxFolder.TabIndex = 2;
             this.toolTip1.SetToolTip(this.textBoxFolder, "Certificate file directory");
-            this.textBoxFolder.TextChanged += new System.EventHandler(this.textBoxFolder_TextChanged);
+            this.textBoxFolder.TextChanged += new System.EventHandler(this.TextBoxFolder_TextChanged);
             // 
             // listBoxCertFiles
             // 
@@ -395,7 +395,7 @@ namespace X509CertificateTool
             this.listBoxCertFiles.Name = "listBoxCertFiles";
             this.listBoxCertFiles.Size = new System.Drawing.Size(198, 641);
             this.listBoxCertFiles.TabIndex = 1;
-            this.listBoxCertFiles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listBoxCertFiles_MouseDown);
+            this.listBoxCertFiles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ListBoxCertFiles_MouseDown);
             // 
             // button1
             // 
@@ -405,7 +405,7 @@ namespace X509CertificateTool
             this.button1.TabIndex = 0;
             this.button1.Text = "Open folder";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // panel1
             // 
@@ -423,7 +423,7 @@ namespace X509CertificateTool
             this.textBoxFilterDisplay.Size = new System.Drawing.Size(435, 20);
             this.textBoxFilterDisplay.TabIndex = 0;
             this.toolTip1.SetToolTip(this.textBoxFilterDisplay, "Certificate store search expression");
-            this.textBoxFilterDisplay.TextChanged += new System.EventHandler(this.textBoxFilterDisplay_TextChanged);
+            this.textBoxFilterDisplay.TextChanged += new System.EventHandler(this.TextBoxFilterDisplay_TextChanged);
             // 
             // CertificateInstallationForm
             // 

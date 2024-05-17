@@ -13,7 +13,7 @@ internal class SimpleRSAPubKey
 
 	internal SimpleRSAPubKey(X509Certificate2 cert)
 	{
-		AsymmetricAlgorithm key = cert.PublicKey.Key;
+		var key = cert.GetRSAPublicKey();
 		string keyAsXml = key.ToXmlString(false);
 
 		modulus = GetModulus(keyAsXml);
